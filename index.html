@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Salon Shift Share</title>
+  <style>
+    :root{--bg:#f4f6f8;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--accent:#111827;--ok:#dcfce7;--okText:#166534;--wait:#fef3c7;--waitText:#92400e;--open:#dbeafe;--openText:#1d4ed8}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,select{font:inherit}.app{max-width:860px;margin:auto;min-height:100vh;padding:16px 14px 96px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.brand h1{font-size:22px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:4px 0 0}
+    .role{display:flex;background:#e5e7eb;padding:3px;border-radius:999px}.role button{border:0;background:transparent;padding:8px 12px;border-radius:999px;font-weight:700;color:var(--muted)}.role button.active{background:#fff;color:#111827;box-shadow:0 1px 3px #0002}
+    .hero{background:#111827;color:#fff;border-radius:22px;padding:20px;margin-bottom:14px}.hero h2{margin:0 0 8px;font-size:23px}.hero p{margin:0;color:#d1d5db;line-height:1.6;font-size:14px}.hero strong{color:#fff}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.stat{background:#ffffff14;border:1px solid #ffffff20;border-radius:14px;padding:12px}.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:#d1d5db}
+    .card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 6px 24px #1118270a}.card h3{margin:0 0 4px;font-size:18px}.sub{color:var(--muted);font-size:12px;margin-bottom:14px}
+    .monthbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.monthbar button{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:12px;font-size:20px}.monthbar b{font-size:17px}
+    .week,.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.week div{text-align:center;font-size:11px;color:var(--muted);padding:4px}.day{min-height:78px;border:1px solid var(--line);border-radius:13px;padding:7px;background:#fff;position:relative}.day.empty{border:0;background:transparent}.day .n{font-size:12px;font-weight:800}.day.today{outline:2px solid #111827}.tag{display:block;margin-top:6px;padding:5px 6px;border-radius:8px;font-size:10px;font-weight:800;line-height:1.25}.tag.open{background:var(--open);color:var(--openText)}.tag.wait{background:var(--wait);color:var(--waitText)}.tag.ok{background:var(--ok);color:var(--okText)}
+    .list{display:grid;gap:9px}.row{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#eef2ff;font-weight:900}.grow{flex:1}.grow b{display:block;font-size:14px}.grow span{font-size:12px;color:var(--muted)}.pill{padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800}.pill.ok{background:var(--ok);color:var(--okText)}.pill.wait{background:var(--wait);color:var(--waitText)}
+    .primary,.secondary{width:100%;border-radius:14px;padding:13px 16px;font-weight:800}.primary{border:0;background:#111827;color:#fff}.secondary{border:1px solid var(--line);background:#fff;color:#111827}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;font-weight:700}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+    .money{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.money div{border-radius:14px;padding:14px;background:#f9fafb}.money b{font-size:20px;display:block}.money span{font-size:11px;color:var(--muted)}
+    .notice{font-size:12px;line-height:1.6;color:var(--muted);background:#f9fafb;border-radius:12px;padding:12px;margin-top:12px}
+    nav{position:fixed;left:0;right:0;bottom:0;background:#fffffff2;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;padding:9px 8px calc(9px + env(safe-area-inset-bottom))}nav .inner{width:min(860px,100%);display:grid;grid-template-columns:repeat(4,1fr)}nav button{border:0;background:transparent;font-size:11px;color:var(--muted);padding:7px}nav button b{display:block;font-size:20px;margin-bottom:2px}nav button.active{color:#111827;font-weight:800}
+    .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+    @media(max-width:520px){.app{padding:12px 10px 92px}.brand h1{font-size:18px}.role button{padding:7px 9px;font-size:12px}.hero{padding:17px}.hero h2{font-size:20px}.stats{gap:7px}.stat{padding:10px}.stat b{font-size:17px}.day{min-height:68px;padding:5px}.tag{font-size:9px;padding:4px}.grid2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><h1>Salon Shift Share</h1><p>空いている席と美容師をつなぐ</p></div>
+    <div class="role"><button id="ownerBtn" class="active">オーナー</button><button id="stylistBtn">美容師</button></div>
+  </header>
+
+  <section class="hero">
+    <h2>店を休んでも、席は働く。</h2>
+    <p>共有シフトを先に確定し、予約は<strong>3日前まで</strong>。カード決済限定で、売上の<strong>60％を美容師へ</strong>自動計算します。</p>
+    <div class="stats"><div class="stat"><b>6日</b><span>今月の稼働予定</span></div><div class="stat"><b>¥184,000</b><span>予約売上</span></div><div class="stat"><b>¥73,600</b><span>店舗取り分40％</span></div></div>
+  </section>
+
+  <section class="card" id="calendarCard">
+    <h3>共有シフト</h3><div class="sub">店舗の空きと美容師の勤務日を一目で確認</div>
+    <div class="monthbar"><button id="prev">‹</button><b id="monthLabel"></b><button id="next">›</button></div>
+    <div class="week"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
+    <div class="calendar" id="calendar"></div>
+  </section>
+
+  <section class="card" id="requestsCard">
+    <h3>勤務希望・承認</h3><div class="sub" id="requestSub">美容師から届いた勤務希望</div>
+    <div class="list" id="requestList"></div>
+    <button class="primary" id="requestBtn" style="margin-top:12px">空いている日を登録する</button>
+  </section>
+
+  <section class="card" id="salesCard">
+    <h3>売上シミュレーション</h3><div class="sub">カード決済額から報酬を自動計算</div>
+    <div class="field"><label>決済金額</label><input id="amount" type="number" value="10000" min="0" step="500"></div>
+    <div class="grid2"><div class="field"><label>美容師の取り分</label><select id="rate"><option value="60">60％</option><option value="55">55％</option><option value="50">50％</option></select></div><div class="field"><label>予約締切</label><select><option>3日前</option><option>5日前</option><option>7日前</option></select></div></div>
+    <div class="money"><div><b id="stylistPay">¥6,000</b><span>美容師報酬</span></div><div><b id="ownerPay">¥4,000</b><span>店舗取り分</span></div></div>
+    <div class="notice">実運用では、カード手数料・材料費・キャンセル料・源泉徴収の扱いを契約で明確にします。</div>
+  </section>
+</div>
+
+<nav><div class="inner"><button class="active" data-jump="calendarCard"><b>📅</b>シフト</button><button data-jump="requestsCard"><b>🤝</b>申請</button><button data-jump="salesCard"><b>💳</b>売上</button><button id="demoReserve"><b>✂️</b>予約</button></div></nav>
+<div class="toast" id="toast"></div>
+<script>
+  const state={role:'owner',cursor:new Date(2026,7,1)};
+  const shifts={
+    '2026-08-07':{t:'1席空き',c:'open'},'2026-08-10':{t:'宇治川さん',c:'ok'},'2026-08-13':{t:'申請中',c:'wait'},'2026-08-17':{t:'2席空き',c:'open'},'2026-08-21':{t:'高橋さん',c:'ok'},'2026-08-28':{t:'1席空き',c:'open'}
+  };
+  const requests=[{name:'宇治川さん',date:'8月10日 9:00〜17:00',status:'承認済み'},{name:'高橋さん',date:'8月21日 10:00〜18:00',status:'承認待ち'}];
+  const yen=n=>'¥'+Math.round(n).toLocaleString('ja-JP');
+  function renderCalendar(){
+    const y=state.cursor.getFullYear(),m=state.cursor.getMonth();
+    document.getElementById('monthLabel').textContent=`${y}年 ${m+1}月`;
+    const first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+    let html=''; for(let i=0;i<first;i++) html+='<div class="day empty"></div>';
+    for(let d=1;d<=days;d++){
+      const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,s=shifts[key];
+      html+=`<div class="day"><span class="n">${d}</span>${s?`<span class="tag ${s.c}">${s.t}</span>`:''}</div>`;
+    } document.getElementById('calendar').innerHTML=html;
+  }
+  function renderRequests(){
+    const el=document.getElementById('requestList');
+    if(state.role==='owner'){
+      document.getElementById('requestSub').textContent='美容師から届いた勤務希望';
+      document.getElementById('requestBtn').textContent='店舗の空き日を登録する';
+      el.innerHTML=requests.map((r,i)=>`<div class="row"><div class="avatar">${r.name[0]}</div><div class="grow"><b>${r.name}</b><span>${r.date}</span></div><button class="pill ${r.status==='承認済み'?'ok':'wait'}" onclick="approve(${i})">${r.status}</button></div>`).join('');
+    }else{
+      document.getElementById('requestSub').textContent='あなたの勤務予定と申請状況';
+      document.getElementById('requestBtn').textContent='働きたい日を申請する';
+      el.innerHTML=`<div class="row"><div class="avatar">宇</div><div class="grow"><b>8月10日 9:00〜17:00</b><span>Salon Sasao・1席</span></div><span class="pill ok">確定</span></div><div class="row"><div class="avatar">宇</div><div class="grow"><b>8月13日 10:00〜16:00</b><span>Salon Sasao・1席</span></div><span class="pill wait">申請中</span></div>`;
+    }
+  }
+  window.approve=i=>{requests[i].status='承認済み';renderRequests();toast('勤務希望を承認しました')};
+  function setRole(role){state.role=role;ownerBtn.classList.toggle('active',role==='owner');stylistBtn.classList.toggle('active',role==='stylist');renderRequests();toast(role==='owner'?'オーナー画面に切り替えました':'美容師画面に切り替えました')}
+  function calc(){const a=Number(amount.value||0),r=Number(rate.value);stylistPay.textContent=yen(a*r/100);ownerPay.textContent=yen(a*(100-r)/100)}
+  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+  ownerBtn.onclick=()=>setRole('owner');stylistBtn.onclick=()=>setRole('stylist');prev.onclick=()=>{state.cursor.setMonth(state.cursor.getMonth()-1);renderCalendar()};next.onclick=()=>{state.cursor.setMonth(state.cursor.getMonth()+1);renderCalendar()};amount.oninput=calc;rate.onchange=calc;
+  requestBtn.onclick=()=>toast(state.role==='owner'?'空き日登録画面は次の開発で接続します':'勤務希望を送信しました');
+  document.querySelectorAll('nav [data-jump]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.jump).scrollIntoView({behavior:'smooth'}));
+  demoReserve.onclick=()=>toast('予約ページは決済連携時に追加します');
+  renderCalendar();renderRequests();calc();
+</script>
+</body>
+</html>
